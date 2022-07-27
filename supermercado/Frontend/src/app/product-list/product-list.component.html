@@ -1,0 +1,23 @@
+<nav class="navbar navbar-expand-lg bg-light">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">SuperMarket</a>
+    <app-cart-badge [cartSize]="cartItemsCount"></app-cart-badge>
+  </div>
+</nav>
+<main class="d-flex flex-nowrap">
+  <app-category-list (change)="updateProductList($event)"></app-category-list>
+  <form [formGroup]="formProduct" class="w-50 m-auto" (ngSubmit)="handleAddProductToCart()">
+    <div class="mb-3">
+      <label for="productSelector" class="form-label">Produto</label>
+      <select (change)="onChangeProduct()" formControlName="product" id="productSelector" class="form-select">
+        <option *ngFor="let product of list" value="{{product.id}}">{{product.name}}</option>
+      </select>
+    </div>
+    <div class="mb-3">
+      <label for="quantity" class="form-label">Quantidade</label>
+      <input type="number" formControlName="quantity" id="quantity" class="form-control">
+      <div class="form-text">Disponível: {{quantityInStock}}</div>
+    </div>
+    <button type="submit" class="btn btn-primary w-100" [disabled]="formProduct.invalid" >Incluir</button>
+  </form>
+</main>

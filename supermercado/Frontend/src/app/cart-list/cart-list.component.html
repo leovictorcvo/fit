@@ -1,0 +1,18 @@
+<main class="m-auto w-100">
+  <div class="py-5 text-center">
+    <h4 class="d-flex justify-content-between align-items-center mb-3">
+      <span class="text-primary">Seu carrinho</span>
+      <span class="badge bg-primary rounded-pill">{{cartSize}}</span>
+    </h4>
+    <ul class="list-group mb-3">
+      <li *ngFor="let item of cart" class="d-flex justify-content-between lh-sm list-group-item">
+        <h6>{{item.productName}}</h6>
+        <span class="text-muted">{{item.quantity}}</span>
+      </li>
+    </ul>
+  </div>
+  <div class="d-flex justify-content-between align-items-center">
+    <button type="button" class="btn btn-primary w-50" (click)="handleFinalize()" [disabled]="cartSize === 0">Finalizar a compra</button>
+    <a class="btn btn-link w-50" routerLink="/">Continuar comprando</a>
+  </div>
+</main>

@@ -1,0 +1,11 @@
+<div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark h-100">
+  <span class="fs-5 fw-semibold">Categorias</span>
+  <hr>
+  <ul class="nav nav-pills flex-column mb-auto">
+    <li *ngFor="let category of list">
+      <a href="#" class="nav-link text-white" [ngClass]="{'active': category.id === activeCategory}" (click)="handleCategorySelected(category.id)" >
+        <strong class="mb-1">{{category.name}}</strong>
+      </a>
+    </li>
+  </ul>
+</div>
