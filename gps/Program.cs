@@ -4,9 +4,16 @@
     {
         private static void Main()
         {
-            GpsFitSolution(ReadFilePath()).ForEach(result => Console.WriteLine(result));
-
-
+            try
+            {
+                GpsFitSolution(ReadFilePath()).ForEach(result => Console.WriteLine(result));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("".PadLeft(20, '>'));
+                Console.WriteLine($"Erro: {e.Message}");
+                Console.WriteLine("".PadLeft(20, '>'));
+            }
         }
 
         private static string ReadFilePath()
@@ -33,51 +40,68 @@
         private static List<Travel> GetTestsFromFile(string filePath)
         {
             var tests = new List<Travel>();
+            int lineNumber = 0;
+            string[] lines = Array.Empty<string>();
 
-            try
+            #region [Local Methods]
+
+            string[] ReadFile()
             {
                 var lines = System.IO.File.ReadAllLines(filePath).ToArray();
                 if (lines == null || lines.Length == 0)
-                    throw new ArgumentException("Arquivo vazio");
+                    throw new FileContentException("Arquivo vazio");
+                return lines;
+            }
 
-                int lineNumber = 0;
-                string GetLine() => lines[lineNumber++].ToLower();
+            string GetLine() => lines[lineNumber++].ToLower();
 
+            int GetNumberOfTests()
+            {
                 if (!int.TryParse(GetLine(), out int numberOfTests))
-                    throw new ArgumentException("Número de testes inválido");
+                    throw new FileContentException(message:"Número de testes inválido", lineNumber: lineNumber, content: lines[lineNumber - 1]);
+                return numberOfTests;
+            }
 
-                for (int testNumber = 0; testNumber < numberOfTests; testNumber++)
+            List<City> GetCities()
+            {
+                if (!int.TryParse(GetLine(), out int numberOfCities))
+                    throw new FileContentException(message:"Número de cidades inválido", lineNumber: lineNumber, content: lines[lineNumber - 1]);
+                var citiesNames = GetLine().Split(' ');
+                var cities = citiesNames
+                    .Where(name => !string.IsNullOrEmpty(name))
+                    .Select(name => new City(name[0])).ToList();
+                return cities;
+            }
+
+            void SetCitiesRoads(List<City> cities)
+            {
+                if (!int.TryParse(GetLine(), out int numberOfRoads))
+                    throw new FileContentException(message:"Quantidade de estradas inválida", lineNumber: lineNumber, content: lines[lineNumber - 1]);
+                for (int roadNumber = 0; roadNumber < numberOfRoads; roadNumber++)
                 {
-                    if (!int.TryParse(GetLine(), out int numberOfCities))
-                        throw new ArgumentException("Número de cidades inválido");
-                    var citiesNames = GetLine().Split(' ');
-                    var cities = citiesNames
-                        .Where(name => !string.IsNullOrEmpty(name))
-                        .Select(name => new City(name[0])).ToList();
+                    var roadDetail = GetLine().Split(' ');
+                    var sourceCity = cities.SingleOrDefault(c => c.Name == roadDetail[0][0]);
+                    var destinationCity = cities.SingleOrDefault(c => c.Name == roadDetail[1][0]);
+                    var timeParsed = int.TryParse(roadDetail[2], out int travelTime);
+                    if (sourceCity == null || destinationCity == null || !timeParsed)
+                        throw new FileContentException(message:"Estrada inválida", lineNumber: lineNumber, content: lines[lineNumber - 1]);
 
-                    if (!int.TryParse(GetLine(), out int numberOfRoads))
-                        throw new ArgumentException("Quantidade de estradas inválida");
-                    for (int roadNumber = 0; roadNumber < numberOfRoads; roadNumber++)
-                    {
-                        var roadDetail = GetLine().Split(' ');
-                        var sourceCity = cities.SingleOrDefault(c => c.Name == roadDetail[0][0]);
-                        var destinationCity = cities.SingleOrDefault(c => c.Name == roadDetail[1][0]);
-                        var timeParsed = int.TryParse(roadDetail[2], out int travelTime);
-                        if (sourceCity == null || destinationCity == null || !timeParsed)
-                            throw new ArgumentException("Caminho a percorrer inválido");
-                        sourceCity.AddRoad(new Road(destinationCity, travelTime));
-                        destinationCity.AddRoad(new Road(sourceCity, travelTime));
-                    }
-                    var travelPath = GetLine();
-                    tests.Add(new Travel(cities, travelPath));
+                    sourceCity.AddRoad(new Road(destinationCity, travelTime));
+                    destinationCity.AddRoad(new Road(sourceCity, travelTime));
                 }
             }
-            catch (Exception e)
+
+            #endregion
+
+            lines = ReadFile();
+            var numberOfTests = GetNumberOfTests();
+
+            for (int testNumber = 0; testNumber < numberOfTests; testNumber++)
             {
-                Console.WriteLine("".PadLeft(10, '>'));
-                Console.WriteLine($"Erro: ${e.Message}");
-                Console.WriteLine("".PadLeft(10, '>'));
-                tests.Clear();
+                var cities = GetCities();
+                SetCitiesRoads(cities);
+                var travelPath = GetLine();
+                tests.Add(new Travel(cities, travelPath));
             }
             return tests;
         }
