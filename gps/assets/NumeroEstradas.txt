@@ -1,0 +1,9 @@
+1
+4
+z a b c 
+a
+z a 1
+z b 2
+a c 2
+b c 1
+z c
