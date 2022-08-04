@@ -1,0 +1,66 @@
+6
+4
+z a b c 
+4
+z a 1
+z b 2
+a c 2
+b c 1
+z c
+4 
+z a b c
+4 
+z a 1
+z b 2
+a c 2
+b c 1
+z a
+4
+z a b c
+4 
+z a 1 
+z b 2
+a c 2
+b c 1
+z b
+6
+z a b c d e
+8
+z a 1
+z b 3
+a c 1
+a e 1
+b c 2
+b e 1
+c d 2
+e d 1
+z d
+10
+z a b c d e f g h i
+10
+z a 1
+z b 1
+z c 1
+a e 1
+b f 1
+c d 1
+d h 1
+e g 1
+f h 1
+g i 1
+z i
+10
+z a b c d e f g h i
+11
+z a 1
+z b 1
+z c 1
+a e 1
+b f 1
+c d 1
+d h 1
+d g 1
+e g 1
+f h 1
+g i 1
+z i
